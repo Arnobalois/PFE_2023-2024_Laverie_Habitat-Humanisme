@@ -1,17 +1,20 @@
+import json
 from django.contrib.auth import  authenticate , login ,logout
 from django.shortcuts import render
 from django.template import loader
 from .models import Machines
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from . import forms
-
+from . import HomeAssistant
+from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
 def dashboard(request):
     if request.user.is_authenticated:
       template = loader.get_template('DashboardTest.html')
       if(Machines.objects.all().exists()):
+          #HomeAssistant.updateDatabase()
           myMachines = Machines.objects.all().values()
           print(myMachines)
           context = {'myMachines': myMachines,}
@@ -45,3 +48,21 @@ def login_page(request):
 def logout_user(request):
      logout(request)
      return redirect("Login")
+
+
+def update(request):
+    if request.user.is_authenticated:
+        if request.method == "GET":
+            HomeAssistant.updateDatabase()
+            response =  list(Machines.objects.values_list('id','Active'))
+            response = json.dumps(response)  
+            return HttpResponse(response)
+        elif request.method == "POST":
+            print("Post request")
+    else : 
+      return redirect("Dashboard")
+
+@login_required
+@permission_required("polls.add_choice")
+def get():
+    print("coucou")

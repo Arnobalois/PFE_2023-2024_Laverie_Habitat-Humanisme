@@ -1,0 +1,7 @@
+version: '3'
+services:
+  laverie:
+    image: pfe_habitat_humanisme-laverie:latest
+    network_mode: host
+    ports: 
+      - '8000:8000'

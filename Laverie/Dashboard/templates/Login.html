@@ -26,12 +26,12 @@
             }
         }
     </style>
-    <link href="{% static 'Login.css' %}" rel="stylesheet">
+    <link href="{% static 'Styles/Login.css' %}" rel="stylesheet">
 {% endblock %}
 {% block  content %}
 
 <form class="form-signin" method="post">
-    <img class="mb-4" src="{% static 'images/logo.png' %}" alt="" width="72" height="72">
+    <img class="mb-4" src="{% static 'Images/logo.png' %}" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Veuillez-vous connecter !</h1>
 
     {% csrf_token %}

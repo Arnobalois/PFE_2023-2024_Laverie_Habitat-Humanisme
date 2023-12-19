@@ -8,7 +8,8 @@
 
     <title>Dashboard Laverie</title>
     <!-- Custom styles for this template-->
-    <link href="{% static 'Dashboard.css' %}" rel="stylesheet">
+    <link href="{% static 'Styles/Dashboard.css' %}" rel="stylesheet">
+    <script src="{% static 'Scripts/Dashboard.js' %}"></script>
  {% endblock %}
 
   {% block  content %}
@@ -37,12 +38,12 @@
         <h4 class="my-0 font-weight-normal">Machine {{ x.Numero_Machine }}</h4>
       </div>
       <div class="card-body">
-        <h1 class="card-title pricing-card-title"></h1>
+        <h1 class="card-title pricing-card-title" ></h1>
         <ul class="list-unstyled mt-3 mb-4">
-          <li>{{ x.Active }}</li>
+          <li id="{{x.id}}" >{{ x.Active }}</li>
 
         </ul>
-        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Selectionner</button>
+        <button id="button{{x.id}}" type="button" class="btn btn-lg btn-block btn-outline-primary" onclick="select_Machine({{x.id}})" >Choisir cette machine</button>
       </div>
     </div>
         {% endfor %}

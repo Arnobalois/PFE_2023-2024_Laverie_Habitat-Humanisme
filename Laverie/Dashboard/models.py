@@ -9,4 +9,4 @@ class Locataires(models.Model):
 class Machines(models.Model):
   Numero_Machine = models.IntegerField(null=False)
   Active = models.BooleanField(null=False)
-  Numero_Capteur = models.CharField(max_length=255)
+  ID_Capteur = models.CharField(max_length=255)

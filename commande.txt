@@ -1,0 +1,15 @@
+# creation de l'image docker laverie uniquement
+docker compose up -build --force-recreate -d laverie 
+
+# Command export image docker en fichier .tar
+
+docker save -o <path for generated tar file> <image name>
+
+# Commande import fichier image .tar en image docker
+
+docker load -i <path to image tar file>
+
+#Copy host vers connection ssh
+
+scp ./Docker\ raspberry//docker-compose.yaml  root@192.168.1.80:/root/
+scp ./SaveDockerImage/Habitat_HumanismeImagev4.tar  root@192.168.1.80:/root/
