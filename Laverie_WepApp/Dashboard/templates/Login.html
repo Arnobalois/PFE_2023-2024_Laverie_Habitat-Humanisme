@@ -1,0 +1,46 @@
+{% extends "master.html" %}
+{% load static %}
+
+
+{% block head %}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>Connexion Laverie</title>
+
+
+<style>
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+</style>
+<link href="{% static 'Styles/Login.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<form class="form-signin" method="post">
+    <img class="mb-4" src="{% static 'Images/logo.png' %}" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Veuillez-vous connecter !</h1>
+
+    {% csrf_token %}
+    <label for="inputIdentifiant" class="sr-only">Identifiant</label>
+    {{ form.username }}
+    <label for="inputMotDePasse" class="sr-only">Mot de passe</label>
+    {{ form.password }}
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+</form>
+{% endblock content %}
