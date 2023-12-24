@@ -26,8 +26,9 @@
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
   <h1 class="display-4">Laverie Habitat Humanisme</h1>
   <p class="lead">Choisissez la machine que vous souhaitez utilisée </p>
-  <p class="lead"> A noter que vous avez 10 min pour confirmer le lancement ! </p>
-
+  <p class="lead"> A noter que vous avez 10 min pour lancer la machine a partir du moment où vous selectionnez une machine ! </p>
+  <p class=" lead"> Si vous avez pas eu le temps , vous pourrez toujours reselectionner la même machine autant de fois que vous voulez</p>
+  <p class="lead"> vous n'etes pas limité sur le nombre de machine que vous pouvez selectionner</p>
 </div>
 
 <div class="container">
@@ -36,7 +37,7 @@
     {% for x in myMachines %}
     <div class="card mb-4 shadow-sm">
       <div class="card-header">
-        <h4 class="my-0 font-weight-normal">Machine {{ x.machine_id }} : {{ x.TypeMachine }} </h4>
+        <h4 class="my-0 font-weight-normal">Machine {{ x.machine_id }} : {{ x.typeMachine }} </h4>
       </div>
       <div class="card-body">
         <div id="Timer{{x.id}}"></div>

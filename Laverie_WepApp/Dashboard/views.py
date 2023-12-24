@@ -1,12 +1,12 @@
 import json
+from django.contrib.auth.models import Permission , User
 from django.contrib.auth import  authenticate , login ,logout
 from django.shortcuts import render
 from django.template import loader
 from .models import Machine
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse, QueryDict
-from . import forms
-import Laverie
+from . import forms , LaverieApp
 from HomeAssistantAPI import HomeAssistant
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -14,10 +14,14 @@ from django.contrib.auth.decorators import login_required, permission_required
 def dashboard(request):
     if request.user.is_authenticated:
       template = loader.get_template('Dashboard.html')
+      print("je suis ici ")
+      permission = Permission.objects.filter(group__user=request.user)
+      print(permission)
       if(Machine.objects.all().exists()):
           #HomeAssistant.updateDatabase()
           myMachines = Machine.objects.all().values()
-          context = {'myMachine': myMachines,}
+          print(myMachines)
+          context = {'myMachines': myMachines}
      
           return HttpResponse( template.render(context, request))
       return HttpResponse(template.render(None, request))
@@ -70,5 +74,5 @@ def start(request):
     elif request.method == "POST":
             print("Post request")
             print(request.POST.get("MachineID",""))
-            start = Laverie.startProcess(request.POST.get("MachineID",""))
-    return {"Status": 'Success',"Started" : start} 
+            start = LaverieApp.startProcess(request.POST.get("MachineID",""))
+    return JsonResponse({"Status": 'Success',"Started" : start})
