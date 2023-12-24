@@ -17,8 +17,9 @@ class HomeAssistantAPITest(TestCase):
         self.sensor_id = "sonoff_1001da0402"
 
     def test_HomeAssitante_API_GET_Sensor_STATE(self):
-        
+
         response = getSensorState(self.sensor_id,SensorRessource.SWITCH)
+        print(response)
         self.assertTrue(((response == "on") or (response == "off")))
 
 

@@ -11,9 +11,9 @@ class SensorType(Enum):
      SWITCH = "switch"
      SENSOR = "sensor"
 class SensorRessource(Enum):
-    SWITCH= "switch"
+    SWITCH= "state"
     CURRENT = "current"
-    CONSUMTION= "energy_day"
+    CONSUMPTION= "energy_day"
 
 def getHomeAssistantAPIStatus():
       url = settings.HA_SERVER + "/api/"
@@ -41,7 +41,7 @@ def getSensorState(sensor_id: str , Ressource : SensorRessource):
       except:
             return {'Error': 'server not responding !'}
       response = json.loads(response.text)
-      return response['state']
+      return response[Ressource.value]
             
             
 def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Services ):
@@ -57,6 +57,6 @@ def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Serv
             response = post(url, headers=headers, json=data)
       except:
             return {'Error': 'server not responding !'}
-      response = json.dumps(response.text)
+      response = json.loads(response.text)
       return response
             
