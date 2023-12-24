@@ -10,18 +10,18 @@ def updateDatabase():
         nombreMachine = Machines.objects.count()
         for i in range(nombreMachine):
             currentMachine = Machines.objects.all()[i]
-            response = HomeAssistant.getSensorState(currentMachine.ID_Capteur,HomeAssistant.SensorRessource.SWITCH)
+            response = HomeAssistant.getSensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH)
             response = json.loads(response.text)
-            currentMachine.Active = True if response["state"] == 'on' else False
+            currentMachine.available = True if response["state"] == 'on' else False
             currentMachine.save()
 
 def startProcess(sensor_id):
     currentMachine = Machines.objects.get(id = sensor_id)
-    if currentMachine.Disponible == False and currentMachine.Running == False:
+    if currentMachine.available == False and currentMachine.running == False:
         #lancer un thread 
         my_thread = threading.Thread(target=cycle_en_cours_Thread,args=(sensor_id,))
         my_thread.start()
-        currentMachine.Disponible = True
+        currentMachine.available = True
         currentMachine.save()
         print("Thread lancé")
         return True
@@ -33,12 +33,12 @@ def startProcess(sensor_id):
 def cycle_en_cours_Thread(sensor_id):
     currentMachine = Machines.objects.get(id = sensor_id)
     print("Thread started.")
-    HomeAssistant.modifySensorState(currentMachine.ID_Capteur,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
+    HomeAssistant.modifySensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
     time.sleep(50)
     print("Thread terminating.")
-    HomeAssistant.modifySensorState(currentMachine.ID_Capteur,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_OFF)
+    HomeAssistant.modifySensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_OFF)
     print(currentMachine)
-    currentMachine.Disponible = False
+    currentMachine.available = False
     currentMachine.save()
     print("Fin de modification disponibilité")
 
