@@ -2,25 +2,24 @@ import json
 from django.test import TestCase
 from django.conf import settings
 from requests import get, post
-from Dashboard.models import Machines
+from .HomeAssistant import *
+from django.http import JsonResponse
 
-class HomeAssistantAPITest(TestCase):
-    def init(self):
-        MachineTest = Machines()
-
+class HomeAssistantServerConnectionTest(TestCase):
 
     def test_HomeAssistant_API_Connection(self):
-        url = settings.HA_SERVER + "/api/"
-        headers = {"Authorization": "Bearer " + settings.HA_TOKEN,"content-type": "application/json",}
-        try :
-            response = get(url, headers=headers)
-        except :
-            self.assertTrue(False)
-        print(response.json())
-        self.assertEqual(response.json(),{"message": "API running."})
-        self.assertNotEqual(404,response.status_code)
-        self.assertNotEqual(403,response.status_code)
-        self.assertNotEqual(402,response.status_code)
+        response = getHomeAssistantAPIStatus()
+        self.assertEqual(response,'"{\\"message\\":\\"API running.\\"}"')
+
+class HomeAssistantAPITest(TestCase):
+    
+    def setUp(self):
+        self.sensor_id = "sonoff_1001da0402"
 
     def test_HomeAssitante_API_GET_Sensor_STATE(self):
-        self.assertTrue
+        
+        response = getSensorState(self.sensor_id,SensorRessource.SWITCH)
+        self.assertTrue(((response == "on") or (response == "off")))
+
+
+

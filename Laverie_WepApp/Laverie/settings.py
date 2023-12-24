@@ -127,8 +127,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH=False
 
-# Token to HomeAssistant API
+# Token for HomeAssistant API
 HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2ZGU4MTlkZDliOGY0MGY3YTIzNzEyYzNjMDdiNWM3MiIsImlhdCI6MTcwMjQ5NjcxNCwiZXhwIjoyMDE3ODU2NzE0fQ.ij0wfcaBDsA1jv1Wiedn-IqkAqjcu6x-cksXuHuBpQg"
 
-# Adresse to HomeAssistant Server
+# server address of HomeAssistant Server
 HA_SERVER = "http://192.168.1.80:8123"

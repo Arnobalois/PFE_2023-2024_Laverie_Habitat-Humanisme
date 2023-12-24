@@ -2,22 +2,22 @@ import json
 from django.contrib.auth import  authenticate , login ,logout
 from django.shortcuts import render
 from django.template import loader
-from .models import Machines
+from .models import Machine
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse, QueryDict
 from . import forms
+import Laverie
 from HomeAssistantAPI import HomeAssistant
-from Laverie import Laverie
 from django.contrib.auth.decorators import login_required, permission_required
 
 # Create your views here.
 def dashboard(request):
     if request.user.is_authenticated:
       template = loader.get_template('Dashboard.html')
-      if(Machines.objects.all().exists()):
+      if(Machine.objects.all().exists()):
           #HomeAssistant.updateDatabase()
-          myMachines = Machines.objects.all().values()
-          context = {'myMachines': myMachines,}
+          myMachines = Machine.objects.all().values()
+          context = {'myMachine': myMachines,}
      
           return HttpResponse( template.render(context, request))
       return HttpResponse(template.render(None, request))
@@ -54,7 +54,7 @@ def update(request):
     if request.user.is_authenticated:
         if request.method == "GET":
            # HomeAssistant.updateDatabase()
-            response =  list(Machines.objects.values_list('id','available'))
+            response =  list(Machine.objects.values_list('id','available'))
             response = json.dumps(response)  
             print(response)
             return HttpResponse(response)
@@ -66,9 +66,9 @@ def update(request):
 def start(request):
     if request.method == "GET":
             print("Get request")
-            return JsonResponse({"status": 'Failed'}) 
+            return {"status": 'Failed'} 
     elif request.method == "POST":
             print("Post request")
             print(request.POST.get("MachineID",""))
             start = Laverie.startProcess(request.POST.get("MachineID",""))
-    return JsonResponse({"Status": 'Success',"Started" : start}) 
+    return {"Status": 'Success',"Started" : start} 

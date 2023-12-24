@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Machines, Locataires , Consomation
+from .models import Machine, Locataire , Consomation
 
 # Register your models here.
-admin.site.register(Machines)
-admin.site.register(Locataires)
+admin.site.register(Machine)
+admin.site.register(Locataire)
 admin.site.register(Consomation)

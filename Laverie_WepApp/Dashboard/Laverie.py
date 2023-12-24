@@ -1,4 +1,4 @@
-from Dashboard.models import Machines
+from .models import Machine
 from HomeAssistantAPI import HomeAssistant
 import json
 import threading
@@ -6,17 +6,17 @@ import time
 
 def updateDatabase():
 
-    if(Machines.objects.all().exists()):
-        nombreMachine = Machines.objects.count()
+    if(Machine.objects.all().exists()):
+        nombreMachine = Machine.objects.count()
         for i in range(nombreMachine):
-            currentMachine = Machines.objects.all()[i]
+            currentMachine = Machine.objects.all()[i]
             response = HomeAssistant.getSensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH)
             response = json.loads(response.text)
             currentMachine.available = True if response["state"] == 'on' else False
             currentMachine.save()
 
 def startProcess(sensor_id):
-    currentMachine = Machines.objects.get(id = sensor_id)
+    currentMachine = Machine.objects.get(id = sensor_id)
     if currentMachine.available == False and currentMachine.running == False:
         #lancer un thread 
         my_thread = threading.Thread(target=cycle_en_cours_Thread,args=(sensor_id,))
@@ -31,7 +31,7 @@ def startProcess(sensor_id):
 
 
 def cycle_en_cours_Thread(sensor_id):
-    currentMachine = Machines.objects.get(id = sensor_id)
+    currentMachine = Machine.objects.get(id = sensor_id)
     print("Thread started.")
     HomeAssistant.modifySensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
     time.sleep(50)
