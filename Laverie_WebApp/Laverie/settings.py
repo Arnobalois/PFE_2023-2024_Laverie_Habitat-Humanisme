@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Dashboard',
-    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH=False
 
 # Token for HomeAssistant API
-HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2ZGU4MTlkZDliOGY0MGY3YTIzNzEyYzNjMDdiNWM3MiIsImlhdCI6MTcwMjQ5NjcxNCwiZXhwIjoyMDE3ODU2NzE0fQ.ij0wfcaBDsA1jv1Wiedn-IqkAqjcu6x-cksXuHuBpQg"
+HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5YmIwYzlhNWU0ZTQ0MTY1OGMzNjMxZGVjZmRjNjE2MCIsImlhdCI6MTcwMjQ5NzA3NCwiZXhwIjoyMDE3ODU3MDc0fQ.FKq6IY3mgHKcqkh2Vxtjq_5fPRS-edzKsfN0qubkVLg"
 
 # server address of HomeAssistant Server
 HA_SERVER = "http://192.168.1.80:8123"

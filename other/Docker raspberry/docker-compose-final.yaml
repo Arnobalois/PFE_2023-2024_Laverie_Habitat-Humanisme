@@ -1,9 +1,9 @@
 version: '3'
 services:
   laveriewebapp:
-    build: ./Laverie_WebApp
     image: laverie_webapp:latest
-    network_mode : host
+    container_name: laverie-webapp
+    network_mode: host
     ports: 
       - '8000:8000'
   homeassistant:
@@ -11,9 +11,8 @@ services:
     image: homeassistant/home-assistant:latest
     volumes:
       - /run/dbus:/run/dbus:ro
-
     environment:
-      - TZ=Europe/Sofia # get your Time Zone from - https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      - TZ=Europe/Sofia 
     network_mode: host
     ports:
       - '8123:8123'

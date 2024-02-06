@@ -30,13 +30,13 @@ def startProcess(sensor_id):
         return False
 
 
-def cycle_en_cours_Thread(sensor_id):
-    currentMachine = Machine.objects.get(id = sensor_id)
+def cycle_en_cours_Thread(machine_id):
+    currentMachine = Machine.objects.get(id = machine_id)
     print("Thread started.")
-    #HomeAssistant.modifySensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
+    HomeAssistant.modifySensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
     time.sleep(50)
     print("Thread terminating.")
-   # HomeAssistant.modifySensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_OFF)
+    HomeAssistant.modifySensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_OFF)
     print(currentMachine)
     currentMachine.available = False
     currentMachine.save()

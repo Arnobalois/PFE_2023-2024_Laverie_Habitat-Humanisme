@@ -1,7 +1,8 @@
 version: '3'
 services:
   laverie:
-    image: pfe_habitat_humanisme-laverie:latest
+    image: laverie_webapp:latest
+    container_name: laverie-webapp
     network_mode: host
     ports: 
       - '8000:8000'

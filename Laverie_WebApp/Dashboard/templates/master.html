@@ -4,9 +4,8 @@
 
 <head>
 
-  {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
+  <link href="{% static 'Styles/bootstrap.css' %}" rel="stylesheet">
+  <script src="{% static 'Scripts/bootstrap.js' %}"></script>
   <link rel="shortcut icon" type="image/png" href="{% static 'Images/logo.png' %}">
   {% block head %}
   {% endblock %}
