@@ -47,7 +47,6 @@ def getSensorState(sensor_id: str , Ressource : SensorRessource):
 def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Services ):
       match Ressource:
             case SensorRessource.SWITCH:
-                  print(id_sensor)
                   url = settings.HA_SERVER + "/api/services/switch/"+state.value
                   headers = {"Authorization": "Bearer "+settings.HA_TOKEN}
                   data = {"entity_id": "switch." + id_sensor}
@@ -55,8 +54,8 @@ def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Serv
                   return {'Error':'Resource doesn\'t exist in Home Assistant' }
       try :
             response = post(url, headers=headers, json=data)
-            print(response)
-            return True
+            response = json.loads(response.text)
+            return response[Ressource.value]
       except:
             return {'Error': 'server not responding !'}
       

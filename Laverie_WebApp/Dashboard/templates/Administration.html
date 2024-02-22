@@ -1,0 +1,106 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block head %}
+
+<title>Administration Laverie</title>
+<!-- Custom styles for this template-->
+<link href="{% static 'Styles/Accueil.css' %}" rel="stylesheet">
+<script src="{% static 'Scripts/Convert.js' %}"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+</script>
+<style>
+  .card{
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  .form-select{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid ">
+    <a class="navbar-brand fs-1" href="{% url 'Accueil' %}">Laverie Habitat & Humanisme</a>
+    {% if admin is true %}
+    <a class=" d-flex btn btn-danger fs-1" href="/admin/">Administration Django</a>
+    {% endif %}
+    <a class=" d-flex btn btn-danger fs-1" href="{% url 'Logout' %}">Deconnexion</a>
+
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <div class="tab-content mt-3">
+      
+      <div id="Locataire" class="tab-pane fade show active">
+        <table id="LocataireTable" class="table">
+          <thead class="thead-dark">
+              <tr>
+                  <th scope="col">Nom</th>
+                  <th scope="col">Prenom</th>
+                  <th scope="col">Periode</th>
+                  <th scope="col">Choix</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for consumption in consumptions %}
+              <tr>
+                  <td>{{ consumption.Nom }}</td>
+                  <td>{{ consumption.Prenom }}</td>
+                  <td><select class="select-option-Years form-select form-select-sm" aria-label=".select-option-Years">
+                    <option value="all">Toutes les années</option>
+                    {% for date in consumption.PeriodeYears %}
+                    <option value={{date}}>{{date}}</option>
+                    {% endfor %}
+                    {% if Periodes is not NONE %}
+                    
+                    {%endif%}
+                  </select>
+                  <select class="select-option-Months form-select form-select-sm" aria-label=".select-option-Months">
+                    <option value="all">Année complète</option>
+                    {% for date in consumption.PeriodeMonths %}
+                    <option value={{date}}>{{date}}</option>
+                    {% endfor %}
+                    {% if Periodes is not NONE %}
+                    
+                    {%endif%}
+                  </select></td>
+                  <td><input class="checkbox-option" type="checkbox"></td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      </div>
+  </div>
+</div>
+
+<div class="card text-center">
+  <div class="card-header">
+    Featured
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Exporter l'ensemble des consomations</h5>
+    <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+      <option value="none">--Choisir une période--</option>
+      {% for Periode in Periodes %}
+      <option value={{Periode}}>{{Periode}}</option>
+      {% endfor %}
+      {% if Periodes is not NONE %}
+      <option value="Toutes">Toutes les années</option>
+      {%endif%}
+    </select> 
+    <button onclick="convert()" class="btn btn-primary">Exporter</a>
+  </div>
+  <div class="card-footer text-muted">
+  </div>
+</div>
+
+{% endblock content %}

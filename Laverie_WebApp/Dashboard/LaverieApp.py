@@ -5,14 +5,15 @@ import threading
 import time
 
 def updateDatabase():
-
     if(Machine.objects.all().exists()):
         nombreMachine = Machine.objects.count()
         for i in range(nombreMachine):
             currentMachine = Machine.objects.all()[i]
-            response = HomeAssistant.getSensorState(currentMachine.machine_id,HomeAssistant.SensorRessource.SWITCH)
-            response = json.loads(response.text)
-            currentMachine.available = True if response["state"] == 'on' else False
+            response = HomeAssistant.getSensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH)
+            if 'Error' in response.keys(): 
+                currentMachine.available = False
+            else:
+                currentMachine.available = True if response["state"] == 'on' else False
             currentMachine.save()
 
 def startProcess(sensor_id):

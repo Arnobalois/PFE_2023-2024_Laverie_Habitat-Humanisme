@@ -61,7 +61,7 @@ def logout_user(request):
 @require_safe
 def update(request):
         if request.method == "GET":
-            LaverieApp.updateDatabase()
+            #LaverieApp.updateDatabase()
             response =  list(Machine.objects.values_list('id','available'))
             response = json.dumps(response)  
             return HttpResponse(response)
