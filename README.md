@@ -30,19 +30,19 @@ Choose Install Now.
 2. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your_username/your_project.git
+   git clone https://github.com/Arnobalois/PFE_2023-2024_Laverie_Habitat-Humanisme.git
    ```
 
 3. **Navigate into the project directory:**
 
    ```bash
-   cd your_project
+   cd PFE_2023-2024_Laverie_Habitat-Humanisme
    ```
 
 4. **Install dependencies:**
 
    ```bash
-   pip install -r requirements.txt
+   pip install -r Laverie_WebApp/requirements.txt
    ```
 
 5. **Apply migrations:**
