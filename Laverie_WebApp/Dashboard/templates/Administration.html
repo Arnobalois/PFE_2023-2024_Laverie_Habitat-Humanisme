@@ -53,8 +53,8 @@
           <tbody>
               {% for consumption in consumptions %}
               <tr>
-                  <td>{{ consumption.Nom }}</td>
-                  <td>{{ consumption.Prenom }}</td>
+                  <td>{{ consumption.LastName }}</td>
+                  <td>{{ consumption.FirstName }}</td>
                   <td><select class="select-option-Years form-select form-select-sm" aria-label=".select-option-Years">
                     <option value="all">Toutes les années</option>
                     {% for date in consumption.PeriodeYears %}

@@ -5,6 +5,9 @@ import threading
 import time
 
 def updateDatabase():
+    """
+    Updates the availability status of machines in the database based on their sensor state.
+    """
     if(Machine.objects.all().exists()):
         nombreMachine = Machine.objects.count()
         for i in range(nombreMachine):
@@ -17,6 +20,15 @@ def updateDatabase():
             currentMachine.save()
 
 def startProcess(sensor_id):
+    """
+    Starts the laundry process for the specified machine.
+
+    Args:
+        sensor_id (int): The ID of the machine.
+
+    Returns:
+        bool: True if the process is successfully started, False otherwise.
+    """
     currentMachine = Machine.objects.get(id = sensor_id)
     if currentMachine.available == False and currentMachine.running == False:
         #lancer un thread 
