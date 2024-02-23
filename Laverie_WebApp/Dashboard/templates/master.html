@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <link href="{% static 'Styles/bootstrap.css' %}" rel="stylesheet">
+  <script src="{% static 'Scripts/bootstrap.js' %}"></script>
+  <link rel="shortcut icon" type="image/png" href="{% static 'Images/logo.png' %}">
+  {% block head %}
+  {% endblock %}
+</head>
+
+<body class="text-center">
+
+
+  {% block content %}
+  {% endblock content %}
+
+  {% if user.is_authenticated %}
+  <p>Vous êtes connecté en tant que {{ request.user }}. Cliquer-ici pour vous <a
+      href="{% url 'Logout' %}">deconnecter</a></p>
+  {% endif %}
+
+</body>
+
+</html>

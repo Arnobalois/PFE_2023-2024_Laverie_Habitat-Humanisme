@@ -1,0 +1,27 @@
+# creation de l'image docker laverie uniquement
+docker compose up --build --force-recreate -d laveriewebapp
+
+# Command export image docker en fichier .tar
+
+docker save -o <path for generated tar file> <image name>
+docker save -o PFE_WebApp_Docker.tar laverie_webapp
+
+# Commande import fichier image .tar en image docker
+
+docker load -i <path to image tar file>
+docker load -i PFE_WebApp_Docker.tar
+
+#Copy host vers connection ssh
+
+scp ./other/Docker\ raspberry//docker-compose-app.yaml  root@192.168.1.80:/root/docker-compose.yaml
+scp ./other/Docker\ raspberry//docker-compose-ha.yaml  root@192.168.1.80:/root/docker-compose.yaml
+scp ./PFE_WebApp_Docker.tar  root@192.168.1.80:/root/
+
+# open docker bash
+docker exec -it <container name > bash
+
+#create surper user django
+python manage.py createsuperuser
+
+#install hacs 
+wget -O - https://get.hacs.xyz | bash -
