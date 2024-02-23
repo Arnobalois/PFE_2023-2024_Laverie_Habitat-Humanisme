@@ -8,7 +8,7 @@ During this project I had to create a system for a private laundry where users c
 
    If you haven't already installed Python
 
-*** Install on linux ***
+***Install on linux***
    Update 
 ```sh
 $ sudo apt update 
@@ -17,7 +17,7 @@ Install
 ```sh
 $ sudo apt install python3
 ```
-*** Install on windows ***
+***Install on windows***
 
 Download the latest version of the Python executable installer for Windows x86-64 from the Python.org downloads page.
 
