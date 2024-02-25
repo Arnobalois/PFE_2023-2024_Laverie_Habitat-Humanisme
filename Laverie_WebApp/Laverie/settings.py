@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n(vgb9paeonffm5ii-+8sdfo^%vlj4bbk4qpqh8g2mb(jt#9k+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.1.80","127.0.0.1"]
 
@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auto_logout.middleware.auto_logout',
 ]
 
 ROOT_URLCONF = 'Laverie.urls'
@@ -127,7 +128,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH=False
 
 # Token for HomeAssistant API
-HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5YmIwYzlhNWU0ZTQ0MTY1OGMzNjMxZGVjZmRjNjE2MCIsImlhdCI6MTcwMjQ5NzA3NCwiZXhwIjoyMDE3ODU3MDc0fQ.FKq6IY3mgHKcqkh2Vxtjq_5fPRS-edzKsfN0qubkVLg"
+HA_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxM2IxZTkzMWY5NmM0NGRiOTgyZWI4NDcyNjliMDdkZSIsImlhdCI6MTcwODg4NzI2NiwiZXhwIjoyMDI0MjQ3MjY2fQ.dwMJCZvQ3PCuHwE7fpcagpNCNBMCzf9yFn5c_5pUbpA"
 
 # server address of HomeAssistant Server
 HA_SERVER = "http://192.168.1.80:8123"
+AUTO_LOGOUT = {'IDLE_TIME': 600} # 10 minutes

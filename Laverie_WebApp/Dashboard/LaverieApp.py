@@ -1,9 +1,8 @@
-from .models import Machine
+from .models import Machine , Consommation
 from HomeAssistantAPI import HomeAssistant
 import json
 import threading
 import time
-
 def updateDatabase():
     """
     Updates the availability status of machines in the database based on their sensor state.
@@ -13,49 +12,85 @@ def updateDatabase():
         for i in range(nombreMachine):
             currentMachine = Machine.objects.all()[i]
             response = HomeAssistant.getSensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH)
+            print(response)
             if 'Error' in response.keys(): 
                 currentMachine.available = False
             else:
-                currentMachine.available = True if response["state"] == 'on' else False
+                currentMachine.available = True if response["state"] == 'off' else False
             currentMachine.save()
 
-def startProcess(sensor_id):
+def startProcess(machine_id,id_user):
     """
     Starts the laundry process for the specified machine.
 
     Args:
-        sensor_id (int): The ID of the machine.
+        machine_id (int): The ID of the machine.
 
     Returns:
         bool: True if the process is successfully started, False otherwise.
     """
-    currentMachine = Machine.objects.get(id = sensor_id)
-    if currentMachine.available == False and currentMachine.running == False:
-        #lancer un thread 
-        my_thread = threading.Thread(target=cycle_en_cours_Thread,args=(sensor_id,))
+    if HomeAssistant.getHomeAssistantAPIStatus() == {'Error': 'server not responding !'}:
+        return False
+    currentMachine = Machine.objects.get(id = machine_id)
+    if currentMachine is None:
+        return False
+    if HomeAssistant.getSensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH) == {'Error': 'server not responding !'}:
+        return False
+    if currentMachine.available == True and currentMachine.running == False:
+        my_thread = threading.Thread(target=cycle_en_cours_Thread,args=(machine_id,id_user,))
         my_thread.start()
-        currentMachine.available = True
-        currentMachine.save()
-        print("Thread lancé")
         return True
     else:
-        print("Cette machine est déja en cours d'utilisation")
         return False
 
 
-def cycle_en_cours_Thread(machine_id):
-    currentMachine = Machine.objects.get(id = machine_id)
-    print("Thread started.")
-    HomeAssistant.modifySensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_ON)
-    time.sleep(50)
-    print("Thread terminating.")
-    HomeAssistant.modifySensorState(currentMachine.sensor_id,HomeAssistant.SensorRessource.SWITCH,HomeAssistant.Services.TURN_OFF)
-    print(currentMachine)
-    currentMachine.available = False
-    currentMachine.save()
-    print("Fin de modification disponibilité")
+def cycle_en_cours_Thread(machine_id, id_user):
+    """
+    Function to run a laundry cycle on a specific machine.
 
-#Thread : lancer un chrono de 10 min durant lequel on fait des requête vers HA pour verifier si il y a une monté en tension
-#des qu'on vois l'apparition du patern on envoi un signal pour indiquer que la machine est bien prise 
-#par la suite on vien interoger HA toute les mins pour verifier qu'on est pas a l'arrêt 
-    #si la machine s'arrete on modifie la valeur en bdd et on kill le thread 
+    Args:
+        machine_id (int): The ID of the machine.
+        id_user (int): The ID of the user.
+
+    Returns:
+        bool: True if the cycle was completed successfully, False otherwise.
+    """
+
+    currentMachine = Machine.objects.get(id=machine_id)
+    currentMachine.available = False
+    currentMachine.RemainingTime = 20
+    currentMachine.save()
+
+    HomeAssistant.modifySensorState(currentMachine.sensor_id, HomeAssistant.SensorRessource.SWITCH, HomeAssistant.Services.TURN_ON)
+    while currentMachine.RemainingTime > 0:
+        if HomeAssistant.getSensorState(currentMachine.sensor_id, HomeAssistant.SensorRessource.POWER)["state"] >"400":
+            currentMachine.running = True
+            currentMachine.RemainingTime = 60
+            currentMachine.save()
+            break
+        time.sleep(30)
+        currentMachine.RemainingTime -= 0.5
+        currentMachine.save()
+
+    if currentMachine.running:
+        StartingDate = time.time()
+        comsumptionDataBase = Consommation.objects.create(comsumption_date=StartingDate, user=id_user, machine=currentMachine, comsumption_duration=0, comsumption=0)
+        while True:
+            if HomeAssistant.getSensorState(currentMachine.sensor_id, HomeAssistant.SensorRessource.POWER)["state"]  < "50":
+                break
+            comsumption = HomeAssistant.getSensorState(currentMachine.sensor_id, HomeAssistant.SensorRessource.CONSUMPTION)
+            comsumptionDataBase.comsumption_duration = time.time() - StartingDate
+            comsumptionDataBase.comsumption = comsumption
+            comsumptionDataBase.save()
+            time.sleep(60)
+            currentMachine.RemainingTime -= 1
+            comsumptionDataBase.save()
+
+
+    HomeAssistant.modifySensorState(currentMachine.sensor_id, HomeAssistant.SensorRessource.SWITCH, HomeAssistant.Services.TURN_OFF)
+    currentMachine.running = False
+    currentMachine.available = True
+    currentMachine.RemainingTime = 0
+    currentMachine.save()
+
+    return True

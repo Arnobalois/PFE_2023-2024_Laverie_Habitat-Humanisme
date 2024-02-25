@@ -11,7 +11,7 @@ from . import forms , LaverieApp
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_http_methods , require_safe
-
+from HomeAssistantAPI import HomeAssistant
 
 
 # Create your views here.
@@ -34,7 +34,7 @@ def Accueil(request):
     else:
         context = {'admin' : False}
     if(Machine.objects.all().exists()):
-       # LaverieApp.updateDatabase()
+        LaverieApp.updateDatabase()
         myMachines = Machine.objects.all().values()
         context['myMachines'] = myMachines
     return HttpResponse(template.render(context, request))
@@ -99,8 +99,8 @@ def update(request):
     - If the request method is POST, it returns a dictionary with a 'status' key set to 'failed'.
     """
     if request.method == "GET":
-        #LaverieApp.updateDatabase()
-        response =  list(Machine.objects.values_list('id','available'))
+        LaverieApp.updateDatabase()
+        response =  list(Machine.objects.values_list('id','available','RemainingTime'))
         response = json.dumps(response)  
         return HttpResponse(response)
     elif request.method =="POST":
@@ -121,7 +121,8 @@ def start(request):
     if request.method == "GET":
         return {"status": 'Failed'} 
     elif request.method == "POST":
-        start = LaverieApp.startProcess(request.POST.get("MachineID",""))
+        
+        start = LaverieApp.startProcess(request.POST.get("MachineID",""),request.user.pk)
     return JsonResponse({"status": 'success',"started" : start})
 
 @login_required(login_url='/Login')
@@ -144,6 +145,7 @@ def Admin(request):
     for user in users:
         consumption = {'FirstName': user.first_name}
         consumption["LastName"] = user.last_name
+        consumption["id"] = user.pk
         consumption["PeriodeYears"] = []
         consumption["PeriodeMonths"] = []
         if Consommation.objects.filter(user_id=user.pk).exists():
@@ -166,17 +168,44 @@ def Admin(request):
 def Convert(request):
     print(request.POST)
     if len(request.POST) == 0 : 
-        print("je suis vide")
-    
+        return JsonResponse({"status": 'Failed'})
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="somefilename.csv"'
     for data in request.POST:
         newdata=json.loads(data)
+        writer = csv.writer(response)
+        writer.writerow(["Nom","Prenom","Date_Consomation","Consommation","Duree_Consomation","id_Machine","Type_Machine"])
         for tinydata in newdata:
-            print(tinydata["Nom"])
+            if tinydata["Id"] == "all":
+                users = User.objects.all()
+                if users.exists():
+                    for user in users:
+                        userConsumptions = Consommation.objects.filter(user_id=user.pk).all()
+                        for consumption in userConsumptions:
+                            if tinydata["Years"] == "all" or tinydata["Years"] == str(consumption.comsumption_date.year): 
+                                writer.writerow([user.last_name,user.first_name,consumption.comsumption_date,consumption.comsumption,consumption.comsumption_duration,consumption.machine.machine_id,consumption.machine.typeMachine])
+                else:
+                    return JsonResponse({"status": 'No data'})
+            else:
+                userConsumptions = Consommation.objects.filter(user_id=tinydata["Id"]).all()
+                if userConsumptions.exists():
+                    for consumption in userConsumptions:
+                        if tinydata["Years"] == "all" and str(consumption.comsumption_date.month) == tinydata["Months"] or tinydata["Months"] == "all" and str(consumption.comsumption_date.year) == tinydata["Years"] or str(consumption.comsumption_date.year) == tinydata["Years"] and str(consumption.comsumption_date.month) == tinydata["Months"] or tinydata["Years"] == "all" and tinydata["Months"] == "all":
+                            writer.writerow([tinydata["last_name"],tinydata["first_name"],consumption.comsumption_date,consumption.comsumption,consumption.comsumption_duration,consumption.machine.machine_id,consumption.machine.typeMachine])
+        return response
 
-    #response = HttpResponse(content_type="text/csv")
-    #response["Content-Disposition"] = 'attachment; filename="somefilename.csv"'
-    
-    #writer = csv.writer(response)
-    #writer.writerow(["Nom","Prenom","Annees"])
-    #return response
-    return JsonResponse({"status": 'Failed'})
+@login_required(login_url='/Login')
+@require_safe
+@staff_member_required
+def ServerStatus(request):
+    """
+    Retrieves the status of the Home Assistant API.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        JsonResponse: The response from the API, or an error message if the server is not responding.
+    """
+    response = HomeAssistant.getHomeAssistantAPIStatus()
+    return JsonResponse(response)

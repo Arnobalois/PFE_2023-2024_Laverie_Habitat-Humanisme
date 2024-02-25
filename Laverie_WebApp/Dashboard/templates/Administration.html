@@ -7,7 +7,8 @@
 <!-- Custom styles for this template-->
 <link href="{% static 'Styles/Accueil.css' %}" rel="stylesheet">
 <script src="{% static 'Scripts/Convert.js' %}"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+<script src="{% static 'Scripts/Administration.js' %}"></script>
+<script src="{% static 'Scripts/jquery.js' %}"></script>
 </script>
 <style>
   .card{
@@ -20,10 +21,17 @@
     margin-left: auto;
     margin-right: auto;
   }
+  .alert{
+    display: none;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<div id="alertServeurIndisponible"class="alert alert-danger" role="alert">
+  WARNING : le Serveur Home Assistant est insdiponible ! 
+</div>
 
 <nav class="navbar navbar-light bg-light">
   <div class="container-fluid ">
@@ -44,6 +52,7 @@
         <table id="LocataireTable" class="table">
           <thead class="thead-dark">
               <tr>
+                <th scope="col">id</th>
                   <th scope="col">Nom</th>
                   <th scope="col">Prenom</th>
                   <th scope="col">Periode</th>
@@ -53,6 +62,7 @@
           <tbody>
               {% for consumption in consumptions %}
               <tr>
+                <td>{{ consumption.id }}</td>
                   <td>{{ consumption.LastName }}</td>
                   <td>{{ consumption.FirstName }}</td>
                   <td><select class="select-option-Years form-select form-select-sm" aria-label=".select-option-Years">
@@ -80,6 +90,7 @@
       </table>
       </div>
   </div>
+  <a><button onclick="convert_table()" class="btn btn-primary text-center">Exporter</a>
 </div>
 
 <div class="card text-center">
@@ -88,7 +99,7 @@
   </div>
   <div class="card-body">
     <h5 class="card-title">Exporter l'ensemble des consomations</h5>
-    <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+    <select id="select-option-Years-All" class=" form-select form-select-sm" aria-label=".form-select-sm example">
       <option value="none">--Choisir une période--</option>
       {% for Periode in Periodes %}
       <option value={{Periode}}>{{Periode}}</option>
@@ -97,7 +108,7 @@
       <option value="Toutes">Toutes les années</option>
       {%endif%}
     </select> 
-    <button onclick="convert()" class="btn btn-primary">Exporter</a>
+    <a><button onclick="convert_all()" class="btn btn-primary">Exporter</a>
   </div>
   <div class="card-footer text-muted">
   </div>

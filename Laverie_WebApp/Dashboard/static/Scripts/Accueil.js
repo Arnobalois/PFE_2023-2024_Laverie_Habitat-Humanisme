@@ -13,15 +13,22 @@ function update_front_info(json) {
  console.log(json);
   json.forEach(element => {
     console.log(element[1])
+    var disponibilite = document.getElementById(element[0]);
     if (!element[1]) {
       console.log("ici")
-      document.getElementById(element[0]).innerHTML = "En cours d'utilisation ! ";
+      disponibilite.innerHTML = "En cours d'utilisation ! ";
+      disponibilite.style.color = "red";
       const button = document.getElementById("button" + element[0])
       button.disabled = true;
+      var timer = document.getElementById("timer" + element[0])
+      timer.innerHTML = "Temps restant : " + element[2] + " minutes restantes";
     } else {
-      document.getElementById(element[0]).innerHTML = "Machine libre !";
+      disponibilite.innerHTML = "Machine libre !";
+      disponibilite.style.color = "green";
       const button = document.getElementById("button" + element[0])
       button.disabled = false;
+      var timer = document.getElementById("timer" + element[0])
+      timer.innerHTML = "Machine " + element[0] + " : Libre";
     }
   });
 }
