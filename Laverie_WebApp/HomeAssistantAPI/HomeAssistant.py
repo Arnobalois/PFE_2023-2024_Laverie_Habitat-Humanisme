@@ -1,4 +1,4 @@
-from requests import get, post
+import  requests
 from enum import Enum
 from django.http import JsonResponse
 from django.conf import settings
@@ -14,6 +14,7 @@ class SensorRessource(Enum):
     SWITCH= "state"
     CURRENT = "current"
     CONSUMPTION= "energy_day"
+    POWER ="power"
 
 def getHomeAssistantAPIStatus():
       """
@@ -25,11 +26,14 @@ def getHomeAssistantAPIStatus():
       url = settings.HA_SERVER + "/api/"
       headers = {"Authorization": "Bearer " + settings.HA_TOKEN,"content-type": "application/json",}
       try:
-            response = get(url, headers=headers)
-      except:
+            response = requests.get(url, headers=headers, timeout=1)
+            return {'Error':'OK' }
+      except(requests.ConnectionError, requests.Timeout):
+            if (response.status_code == 401):
+                  return {'Error':'Tokken incorrect ' }
             return {'Error': 'server not responding !'}
-      response = json.dumps(response.text)
-      return response
+
+      
 
 def getSensorState(sensor_id: str , Ressource : SensorRessource):
       """
@@ -53,14 +57,26 @@ def getSensorState(sensor_id: str , Ressource : SensorRessource):
             case SensorRessource.CURRENT:
                   url = settings.HA_SERVER + "/api/states/"+SensorType.SENSOR.value+ "."+sensor_id+"_"+Ressource.value
                   headers = {"Authorization": "Bearer "+settings.HA_TOKEN}
+
+            case SensorRessource.CONSUMPTION:
+                  url = settings.HA_SERVER + "/api/states/"+SensorType.SENSOR.value+ "."+sensor_id+"_"+Ressource.value
+                  headers = {"Authorization": "Bearer "+settings.HA_TOKEN}
+            case SensorRessource.POWER:
+                  url = settings.HA_SERVER + "/api/states/"+SensorType.SENSOR.value+ "."+sensor_id+"_"+Ressource.value
+                  headers = {"Authorization": "Bearer "+settings.HA_TOKEN}
             case _:
                   return {'Error':'Resource doesn\'t exist in Home Assistant' }
       try :
-            response = get(url, headers=headers)
-      except:
+            response = requests.get(url, headers=headers, timeout=1)
+      except(requests.ConnectionError, requests.Timeout):
             return {'Error': 'server not responding !'}
+      if (response.status_code == 401):
+            return {'Error':'Tokken incorrect ' }
       response = json.loads(response.text)
-      return response[Ressource.value]
+      if(response["state"] == "unavailable"):
+            return {'Error':'Sensor not available'}
+      
+      return {'state': response["state"]}
             
             
 def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Services ):
@@ -87,10 +103,9 @@ def modifySensorState(id_sensor: str , Ressource : SensorRessource, state : Serv
             case _:
                   return {'Error':'Resource doesn\'t exist in Home Assistant' }
       try :
-            response = post(url, headers=headers, json=data)
-            response = json.loads(response.text)
-            return response[Ressource.value]
-      except:
+            response = requests.post(url, headers=headers, json=data,timeout=1)
+            return{'Status': response.status_code}
+      except(requests.ConnectionError, requests.Timeout):
             return {'Error': 'server not responding !'}
       
             

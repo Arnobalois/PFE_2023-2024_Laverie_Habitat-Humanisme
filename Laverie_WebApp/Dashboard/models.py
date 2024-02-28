@@ -19,7 +19,7 @@ class Machine(models.Model):
   RemainingTime = models.IntegerField(null=True , default=0)
 
 class Consommation(models.Model):
-  comsumption_date = models.DateTimeField(null=True)
+  comsumption_date = models.DateTimeField(null=True,auto_now_add=True)
   user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
   machine = models.ForeignKey(Machine, on_delete=models.CASCADE,null=True)
   comsumption_duration = models.IntegerField(null = True)

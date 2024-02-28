@@ -1,18 +1,22 @@
 
-function convert() {
+function convert_table() {
     var tableLocataire = document.getElementById("LocataireTable")
     var Data= [] ;
     for (var i =1, row; row = tableLocataire.rows[i]; i++) {
         var checkboxElement = row.querySelector(".checkbox-option");
-        if (checkboxElement.checked){
-            
+        if (checkboxElement.checked){  
             var selectElementYear = row.querySelector(".select-option-Years");
             var selectElementMonth = row.querySelector(".select-option-Months");
-
-                Data.push({Nom:row.cells[0].innerHTML , Prenom:row.cells[1].innerHTML, Annees:selectElementYear.value,Months:selectElementMonth.value});
+                Data.push({Id:row.cells[0].innerHTML,last_name:row.cells[1].innerHTML , first_name:row.cells[2].innerHTML, Years:selectElementYear.value,Months:selectElementMonth.value});
         }
-
     }
+
+    sendValue(Data);
+  }
+  function convert_all() {
+    var selectElementYearsAll = document.getElementById("select-option-Years-All")
+    var Data= [] ;
+    Data.push({Id:"all",last_name:"all" , first_name:"all", Years:selectElementYearsAll.value,Months:"all"});
     sendValue(Data);
   }
 
@@ -20,7 +24,7 @@ function convert() {
     console.log(Data)
     var csrftoken = document.cookie.match(/csrftoken=([^ ;]+)/)[1];
     $.ajax({
-      url: 'http://127.0.0.1:8000/Convert',  // Replace with the actual URL of your Django view
+      url: 'http://192.168.1.80:8000/Convert',  // Replace with the actual URL of your Django view
       type: 'POST',
       headers: {
         'X-CSRFToken': csrftoken
@@ -38,7 +42,9 @@ function convert() {
         downloadLink.download = 'file.csv'; // Set the file name
         downloadLink.click(); // Simulate click to download
        }
-      
+       else {
+        alert(response.message)
+       }   
         
     },
       error: function (error) {

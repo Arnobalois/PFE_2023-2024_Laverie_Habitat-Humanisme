@@ -19,6 +19,7 @@ scp ./PFE_WebApp_Docker.tar  root@192.168.1.80:/root/
 
 # open docker bash
 docker exec -it <container name > bash
+docker exec -it Home-Assistant-Laverie bash
 
 #create surper user django
 python manage.py createsuperuser

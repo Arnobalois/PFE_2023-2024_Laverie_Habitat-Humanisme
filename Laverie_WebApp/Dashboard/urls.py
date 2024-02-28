@@ -10,5 +10,6 @@ urlpatterns = [
     path('Administration',views.Admin,name="Administration"),
     path('Convert',views.Convert,name="Conversion"),
     path('Login',views.login_page,name="Login"),
+    path('ServerStatus/',views.ServerStatus,name="ServerStatus"),
     path('',views.login_page,name="Root")
 ]
