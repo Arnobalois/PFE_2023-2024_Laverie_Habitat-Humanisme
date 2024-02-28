@@ -38,20 +38,25 @@ Choose Install Now.
    ```bash
    cd PFE_2023-2024_Laverie_Habitat-Humanisme
    ```
+4. **Create venv:**
 
-4. **Install dependencies:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+5. **Install dependencies:**
 
    ```bash
    pip install -r Laverie_WebApp/requirements.txt
    ```
 
-5. **Apply migrations:**
+6. **Apply migrations:**
 
    ```bash
    python manage.py migrate
    ```
 
-6. **Create a superuser (optional):**
+7. **Create a superuser (optional):**
 
    ```bash
    python manage.py createsuperuser
